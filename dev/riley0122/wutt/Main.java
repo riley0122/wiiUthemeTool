@@ -4,10 +4,12 @@ import javax.swing.*;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.Properties;
 
 public class Main {
     public static final String VERSION = "1.0.0";
     public static String ip = "127.0.0.1";
+    public static Properties properties = new Properties();
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
@@ -36,42 +38,44 @@ public class Main {
         gbc.gridx = 1;
         panel.add(ipField, gbc);
     
-        JButton setIpButton = new JButton("Connect");
+        JButton setIpButton = new JButton("Set");
         gbc.gridx = 2;
         panel.add(setIpButton, gbc);
     
         setIpButton.addActionListener(e -> {
             ip = ipField.getText();
-            JOptionPane.showMessageDialog(frame, "IP Address set to: " + ip + "\n\nInitializing connection...");
-            // TODO: connect to the Wii U using FTP
+            JOptionPane.showMessageDialog(frame, "IP Address set to: " + ip);
         });
     
         // File Input Fields
-        addFileInputField(panel, gbc, 1, "cafe_barista_men.bfsar:", "Browse");
-        addFileInputField(panel, gbc, 2, "Men.* (.ips, .bps, .ups, .ppf, .aps, .rup):", "Browse");
-        addFileInputField(panel, gbc, 3, "Men2.* (.ips, .bps, .ups, .ppf, .aps, .rup):", "Browse");
-        addFileInputField(panel, gbc, 4, "Splash.png:", "Browse");
+        addFileInputField(panel, gbc, 1, "cafe_barista_men.bfsar:", "Browse", "music");
+        addFileInputField(panel, gbc, 2, "Men.* (.ips, .bps, .ups, .ppf, .aps, .rup):", "Browse", "men1");
+        addFileInputField(panel, gbc, 3, "Men2.* (.ips, .bps, .ups, .ppf, .aps, .rup):", "Browse", "men2");
+        addFileInputField(panel, gbc, 4, "Splash.png:", "Browse", "splash");
     
         frame.add(panel);
     }
     
-    private static void addFileInputField(JPanel panel, GridBagConstraints gbc, int row, String labelText, String buttonText) {
+    private static void addFileInputField(JPanel panel, GridBagConstraints gbc, int row, String labelText, String buttonText, String id) {
         gbc.gridx = 0;
         gbc.gridy = row;
         panel.add(new JLabel(labelText), gbc);
     
         JTextField textField = new JTextField(20);
         gbc.gridx = 1;
+        textField.setEditable(false);
         panel.add(textField, gbc);
     
         JButton button = new JButton(buttonText);
         gbc.gridx = 2;
         panel.add(button, gbc);
-    
+
         button.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
             if (fileChooser.showOpenDialog(panel) == JFileChooser.APPROVE_OPTION) {
-                textField.setText(fileChooser.getSelectedFile().getAbsolutePath());
+                String path = fileChooser.getSelectedFile().getAbsolutePath();
+                textField.setText(path);
+                properties.setProperty(id, path);
             }
         });
     }
