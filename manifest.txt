@@ -1,0 +1,1 @@
+Main-Class: dev.riley0122.wutt.Main
