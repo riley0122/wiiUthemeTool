@@ -1,6 +1,9 @@
 package dev.riley0122.wutt;
 
 import javax.swing.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 public class Main {
     public static final String VERSION = "1.0.0";
@@ -10,7 +13,7 @@ public class Main {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Wii U Themeing tool");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(400, 300);
+            frame.setSize(700, 300);
 
             createUI(frame);
             
@@ -19,78 +22,57 @@ public class Main {
     }
 
     public static void createUI(JFrame frame) {
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5); // Add padding between components
+    
+        // IP Address Section
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panel.add(new JLabel("IP Address:"), gbc);
+    
         JTextField ipField = new JTextField(ip, 20);
+        gbc.gridx = 1;
+        panel.add(ipField, gbc);
+    
         JButton setIpButton = new JButton("Connect");
+        gbc.gridx = 2;
+        panel.add(setIpButton, gbc);
+    
         setIpButton.addActionListener(e -> {
             ip = ipField.getText();
-            JOptionPane.showMessageDialog(frame, "IP Address set to: " + ip + "\n\nIniializing connection...");
-            
-            // TODO: connect to the wii u using ftp
+            JOptionPane.showMessageDialog(frame, "IP Address set to: " + ip + "\n\nInitializing connection...");
+            // TODO: connect to the Wii U using FTP
         });
-        // Add it to the frame
-        JPanel ipPanel = new JPanel();
-        ipPanel.add(new JLabel("IP Address:"));
-        ipPanel.add(ipField);
-        ipPanel.add(setIpButton);
-
-        // Add 4 file input fields for the 4 files, 'cafe_barista_men.bfsar', Something starting with 'Men.', Something starting with 'Men2.', and 'Splash.png'. The Men files can be of these formats: .ips, .bps, .ups, .ppf, .aps, .rup
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
-        JLabel cafeLabel = new JLabel("cafe_barista_men.bfsar:");
-        JTextField cafeField = new JTextField(20);
-        JButton cafeButton = new JButton("Browse");
-        cafeButton.addActionListener(e -> {
-            JFileChooser fileChooser = new JFileChooser();
-            if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
-            cafeField.setText(fileChooser.getSelectedFile().getAbsolutePath());
-            }
-        });
-
-        JLabel menLabel = new JLabel("Men.* (.ips, .bps, .ups, .ppf, .aps, .rup):");
-        JTextField menField = new JTextField(20);
-        JButton menButton = new JButton("Browse");
-        menButton.addActionListener(e -> {
-            JFileChooser fileChooser = new JFileChooser();
-            if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
-            menField.setText(fileChooser.getSelectedFile().getAbsolutePath());
-            }
-        });
-
-        JLabel men2Label = new JLabel("Men2.* (.ips, .bps, .ups, .ppf, .aps, .rup):");
-        JTextField men2Field = new JTextField(20);
-        JButton men2Button = new JButton("Browse");
-        men2Button.addActionListener(e -> {
-            JFileChooser fileChooser = new JFileChooser();
-            if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
-            men2Field.setText(fileChooser.getSelectedFile().getAbsolutePath());
-            }
-        });
-
-        JLabel splashLabel = new JLabel("Splash.png:");
-        JTextField splashField = new JTextField(20);
-        JButton splashButton = new JButton("Browse");
-        splashButton.addActionListener(e -> {
-            JFileChooser fileChooser = new JFileChooser();
-            if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
-            splashField.setText(fileChooser.getSelectedFile().getAbsolutePath());
-            }
-        });
-
-        panel.add(cafeLabel);
-        panel.add(cafeField);
-        panel.add(cafeButton);
-        panel.add(menLabel);
-        panel.add(menField);
-        panel.add(menButton);
-        panel.add(men2Label);
-        panel.add(men2Field);
-        panel.add(men2Button);
-        panel.add(splashLabel);
-        panel.add(splashField);
-        panel.add(splashButton);
-
+    
+        // File Input Fields
+        addFileInputField(panel, gbc, 1, "cafe_barista_men.bfsar:", "Browse");
+        addFileInputField(panel, gbc, 2, "Men.* (.ips, .bps, .ups, .ppf, .aps, .rup):", "Browse");
+        addFileInputField(panel, gbc, 3, "Men2.* (.ips, .bps, .ups, .ppf, .aps, .rup):", "Browse");
+        addFileInputField(panel, gbc, 4, "Splash.png:", "Browse");
+    
         frame.add(panel);
-        
+    }
+    
+    private static void addFileInputField(JPanel panel, GridBagConstraints gbc, int row, String labelText, String buttonText) {
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        panel.add(new JLabel(labelText), gbc);
+    
+        JTextField textField = new JTextField(20);
+        gbc.gridx = 1;
+        panel.add(textField, gbc);
+    
+        JButton button = new JButton(buttonText);
+        gbc.gridx = 2;
+        panel.add(button, gbc);
+    
+        button.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            if (fileChooser.showOpenDialog(panel) == JFileChooser.APPROVE_OPTION) {
+                textField.setText(fileChooser.getSelectedFile().getAbsolutePath());
+            }
+        });
     }
 }
