@@ -13,12 +13,14 @@ public class Main {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Wii U Themeing tool");
+            JFrame frame = new JFrame("Wii U Theme tool");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setSize(700, 300);
 
             createUI(frame);
             
+            frame.setResizable(false);
+            frame.setAlwaysOnTop(true);
             frame.setVisible(true);
         });
     }
@@ -52,6 +54,13 @@ public class Main {
         addFileInputField(panel, gbc, 2, "Men.* (.ips, .bps, .ups, .ppf, .aps, .rup):", "Browse", "men1");
         addFileInputField(panel, gbc, 3, "Men2.* (.ips, .bps, .ups, .ppf, .aps, .rup):", "Browse", "men2");
         addFileInputField(panel, gbc, 4, "Splash.png:", "Browse", "splash");
+
+        // Submit button
+        JButton submitButton = new JButton("Submit");
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.gridwidth = 3;
+        panel.add(submitButton, gbc);
     
         frame.add(panel);
     }
