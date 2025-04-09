@@ -9,6 +9,7 @@ import java.util.Properties;
 public class Main {
     public static final String VERSION = "1.0.0";
     public static String ip = "127.0.0.1";
+    public static String themeName = "";
     public static Properties properties = new Properties();
 
     public static void main(String[] args) {
@@ -49,22 +50,73 @@ public class Main {
             JOptionPane.showMessageDialog(frame, "IP Address set to: " + ip);
         });
     
+        // Theme Name Section
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panel.add(new JLabel("Theme Name:"), gbc);
+        JTextField themeNameField = new JTextField(20);
+        gbc.gridx = 1;
+        panel.add(themeNameField, gbc);
+
+        JButton setThemeNameButton = new JButton("Set");
+        gbc.gridx = 2;
+        panel.add(setThemeNameButton, gbc);
+
+        setThemeNameButton.addActionListener(e -> {
+            String themeName = themeNameField.getText();
+            if (!themeName.isEmpty()) {
+                Main.themeName = themeName;
+                JOptionPane.showMessageDialog(frame, "Theme Name set to: " + themeName);
+            } else {
+                JOptionPane.showMessageDialog(frame, "Theme Name cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
         // File Input Fields
-        addFileInputField(panel, gbc, 1, "cafe_barista_men.bfsar:", "Browse", "music");
-        addFileInputField(panel, gbc, 2, "Men.* (.ips, .bps, .ups, .ppf, .aps, .rup):", "Browse", "men1");
-        addFileInputField(panel, gbc, 3, "Men2.* (.ips, .bps, .ups, .ppf, .aps, .rup):", "Browse", "men2");
-        addFileInputField(panel, gbc, 4, "Splash.png:", "Browse", "splash");
+        addFileInputField(panel, gbc, 2, "cafe_barista_men.bfsar:", "Browse", "music");
+        addFileInputField(panel, gbc, 3, "Men.* (.ips, .bps, .ups, .ppf, .aps, .rup):", "Browse", "men1");
+        addFileInputField(panel, gbc, 4, "Men2.* (.ips, .bps, .ups, .ppf, .aps, .rup):", "Browse", "men2");
+        addFileInputField(panel, gbc, 5, "Splash.png:", "Browse", "splash");
 
         // Submit button
         JButton submitButton = new JButton("Submit");
         gbc.gridx = 0;
-        gbc.gridy = 5;
+        gbc.gridy = 6;
         gbc.gridwidth = 3;
+        submitButton.addActionListener(e -> {
+            submit();
+        });
         panel.add(submitButton, gbc);
     
         frame.add(panel);
     }
-    
+
+    public static void submit() {
+        // Ask for region (USA/EUR/JPN)
+        String[] regions = {"USA", "EUR", "JPN"};
+        String region = (String) JOptionPane.showInputDialog(
+            null,
+            "Select your region:",
+            "Region Selection",
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            regions,
+            regions[0]
+        );
+
+        if (region == null) {
+            JOptionPane.showMessageDialog(null, "Region selection is required.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String regionCode = region.equals("USA") ? "10040100" : region.equals("EUR") ? "10040200" : "10040000";
+
+        // Download the original Men.pack, Men2.pack, and cafe_barista_men.bfsar files
+        FTP.getFile(ip, "storage_mlc/sys/title/00050010/" + regionCode + "/content/Common/Package/Men.pack");
+        FTP.getFile(ip, "storage_mlc/sys/title/00050010/" + regionCode + "/content/Common/Package/Men2.pack");
+        FTP.getFile(ip, "storage_mlc/sys/title/00050010/" + regionCode + "/content/Common/Sound/Men/cafe_barista_men.bfsar");
+    }
+
     private static void addFileInputField(JPanel panel, GridBagConstraints gbc, int row, String labelText, String buttonText, String id) {
         gbc.gridx = 0;
         gbc.gridy = row;
