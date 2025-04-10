@@ -1,5 +1,7 @@
 package dev.riley0122.wutt;
 
+import java.util.Arrays;
+
 public class Main {
     public static boolean Men1Patch = false;
     public static String Men1PatchPath = "";
@@ -8,18 +10,50 @@ public class Main {
     public static boolean cafeBaristaPatch = false;
     public static String cafeBaristaPatchPath = "";
 
+    public static String themeName = "";
     public static String ip = "";
+
+    enum LogLevel {
+        FATAL,
+        ERROR,
+        WARN,
+        INFO,
+        DEBUG
+    }
+
+    public static LogLevel logLevel = LogLevel.ERROR;
+
+    public static void log(String message, LogLevel level) {
+        if (level.ordinal() <= level.ordinal()) {
+            System.out.println("[" + level.name() + "] " + message);
+        }
+    }
 
     public static void main(String[] args) {
         System.out.println("Wii U Theme Tool (WUTT) - v1.0.0");
         System.out.println("By Riley0122 (riley0122.dev)");
 
+        for (String arg : args) {
+            if (arg.toLowerCase().startsWith("--loglevel=")) {
+                String level = arg.split("=")[1].toUpperCase();
+                try {
+                    logLevel = LogLevel.valueOf(level);
+                    log("Log level set to " + level, LogLevel.INFO);
+                } catch (IllegalArgumentException e) {
+                    log("Invalid log level: " + level + ". Defaulting to ERROR.", LogLevel.ERROR);
+                }
+            }
+        }
+
         System.out.println("What is the IP address of you Wii U console?");
         ip = System.console().readLine().trim();
         if (ip.isBlank()) {
-            System.out.println("IP address cannot be empty. Exiting.");
+            log("IP address cannot be empty. Exiting.", LogLevel.FATAL);
             return;
         }
+
+        System.out.println("What is the name of this theme?");
+        themeName = System.console().readLine().trim();
 
         System.out.println("Is there a Men.bps file you want to apply? (y/N)");
         String input = System.console().readLine().trim().toLowerCase();
@@ -45,6 +79,41 @@ public class Main {
 
         if (cafeBaristaPatch) {
             System.out.println("What is the path of the cafe_barista_men.bps file?");
+        }
+
+        // Apply the patches
+        System.out.println("What is the region of the Wii U console? (EU/US/JP)");
+        String region = System.console().readLine().trim().toUpperCase();
+
+        String regionCode = "";
+        switch (region) {
+            case "EU":
+                regionCode = "10040200";
+                break;
+            case "US":
+                regionCode = "10040100";
+                break;
+            case "JP":
+                regionCode = "10040000";
+                break;
+            default:
+                log("Invalid region. Exiting.", LogLevel.FATAL);
+                return;
+        }
+
+        log("Fetching files from Wii U...", LogLevel.INFO);
+        log("Using region code: " + regionCode, LogLevel.DEBUG);
+
+        if (Men1Patch) {
+            FTP.getFile(ip, "storage_mlc/sys/title/00050010/" + regionCode + "/content/Common/Package/Men.pack");
+        }
+
+        if (Men2Patch) {
+            FTP.getFile(ip, "storage_mlc/sys/title/00050010/" + regionCode + "/content/Common/Package/Men2.pack");
+        }
+
+        if (cafeBaristaPatch) {
+            FTP.getFile(ip, "storage_mlc/sys/title/00050010/" + regionCode + "/content/Common/Sound/Men/cafe_barista_men.bfsar");
         }
     }
 }
