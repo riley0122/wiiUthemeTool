@@ -28,6 +28,7 @@ public class Patcher {
                 return;
             } else {
                 try {
+                    output.getParentFile().mkdirs();
                     output.createNewFile();
                 } catch (IOException e) {
                     System.out.println("Failed to create output file: " + outputRom + " - " + e.getMessage());

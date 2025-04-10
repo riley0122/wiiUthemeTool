@@ -61,7 +61,7 @@ public class Main {
 
         if (Men1Patch) {
             System.out.println("What is the path of the Men.bps file?");
-            Men1PatchPath = System.console().readLine().trim();
+            Men1PatchPath = System.console().readLine().trim().replaceAll("\"", "");
         }
 
         System.out.println("Is there a Men2.bps file you want to apply? (y/N)");
@@ -70,7 +70,7 @@ public class Main {
 
         if (Men2Patch) {
             System.out.println("What is the path of the Men2.bps file?");
-            Men2PatchPath = System.console().readLine().trim();
+            Men2PatchPath =  System.console().readLine().trim().replaceAll("\"", "");
         }
 
         System.out.println("Is there a cafe_barista_men.bps file you want to apply? (y/N)");
@@ -79,7 +79,7 @@ public class Main {
 
         if (cafeBaristaPatch) {
             System.out.println("What is the path of the cafe_barista_men.bps file?");
-            cafeBaristaPatchPath = System.console().readLine().trim();
+            cafeBaristaPatchPath = System.console().readLine().trim().replaceAll("\"", "");
         }
 
         // Fetch original ROMs
@@ -123,6 +123,7 @@ public class Main {
         // Apply patches
         if (Men1Patch) {
             log("Initializing Men.pack patch", LogLevel.INFO);
+            log(Men1PatchPath, LogLevel.DEBUG);
             String outputPath = themeName + "/content/Common/Package/Men.pack";
             String ftpPath = "storage_mlc/sys/title/00050010/" + regionCode + "/content/Common/Package/Men.pack";
             if (Men1PatchPath.endsWith(".bps")) {
@@ -135,6 +136,7 @@ public class Main {
 
         if (Men2Patch) {
             log("Initializing Men2.pack patch", LogLevel.INFO);
+            log(Men2PatchPath, LogLevel.DEBUG);
             String outputPath = themeName + "/content/Common/Package/Men2.pack";
             String ftpPath = "storage_mlc/sys/title/00050010/" + regionCode + "/content/Common/Package/Men2.pack";
             if (Men2PatchPath.endsWith(".bps")) {
@@ -147,6 +149,7 @@ public class Main {
 
         if (cafeBaristaPatch) {
             log("Initializing cafe_barista_men.bfsar patch", LogLevel.INFO);
+            log(cafeBaristaPatchPath, LogLevel.DEBUG);
             String outputPath = themeName + "/content/Common/Package/Sound/Men/cafe_barista_men.bfsar";
             String ftpPath = "storage_mlc/sys/title/00050010/" + regionCode + "/content/Common/Sound/Men/cafe_barista_men.bfsar";
             if (cafeBaristaPatchPath.endsWith(".bps")) {
