@@ -137,19 +137,6 @@ public class Patcher {
                     Main.log("Invalid action in bps file!", LogLevel.FATAL);
                     return;
                 }
-
-                if (sourceCopies > 0 && sourceCopies % 300 == 0) {
-                    Main.log("Applied 300 source Copies for a total of: " + sourceCopies, LogLevel.DEBUG);
-                }
-                if (targetCopies > 0 && targetCopies % 300 == 0) {
-                    Main.log("Applied 300 target Copies for a total of: " + targetCopies, LogLevel.DEBUG);
-                }
-                if (sourceReads > 0 && sourceReads % 300 == 0) {
-                    Main.log("Applied 300 source Reads for a total of: " + sourceReads, LogLevel.DEBUG);
-                }
-                if (targetReads > 0 && targetReads % 300 == 0) {
-                    Main.log("Applied 300 target Reads for a total of: " + targetReads, LogLevel.DEBUG);
-                }
             }
 
             Main.log("Finished applying BPS patch.", LogLevel.INFO);
