@@ -1,5 +1,6 @@
 package dev.riley0122.wutt;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 public class Main {
@@ -127,7 +128,12 @@ public class Main {
             String outputPath = themeName + "/content/Common/Package/Men.pack";
             String ftpPath = "storage_mlc/sys/title/00050010/" + regionCode + "/content/Common/Package/Men.pack";
             if (Men1PatchPath.endsWith(".bps")) {
-                Patcher.BPSpatcher.applyPatch(FTP.getLocalPath(ftpPath), Men1PatchPath, outputPath);
+                try {
+                    Patcher.BPSpatcher.applyPatch(FTP.getLocalPath(ftpPath), Men1PatchPath, outputPath);
+                } catch (IOException e) {
+                    log("Failed to apply patch: " + e.getMessage(), LogLevel.ERROR);
+                    return;
+                }
             } else {
                 log("Only .bps patches are supported at this time.", LogLevel.FATAL);
                 return;
@@ -140,7 +146,12 @@ public class Main {
             String outputPath = themeName + "/content/Common/Package/Men2.pack";
             String ftpPath = "storage_mlc/sys/title/00050010/" + regionCode + "/content/Common/Package/Men2.pack";
             if (Men2PatchPath.endsWith(".bps")) {
-                Patcher.BPSpatcher.applyPatch(FTP.getLocalPath(ftpPath), Men2PatchPath, outputPath);
+                try {
+                    Patcher.BPSpatcher.applyPatch(FTP.getLocalPath(ftpPath), Men2PatchPath, outputPath);
+                } catch (IOException e) {
+                    log("Failed to apply patch: " + e.getMessage(), LogLevel.ERROR);
+                    return;
+                }
             } else {
                 log("Only .bps patches are supported at this time.", LogLevel.FATAL);
                 return;
@@ -153,7 +164,12 @@ public class Main {
             String outputPath = themeName + "/content/Common/Package/Sound/Men/cafe_barista_men.bfsar";
             String ftpPath = "storage_mlc/sys/title/00050010/" + regionCode + "/content/Common/Sound/Men/cafe_barista_men.bfsar";
             if (cafeBaristaPatchPath.endsWith(".bps")) {
-                Patcher.BPSpatcher.applyPatch(FTP.getLocalPath(ftpPath), cafeBaristaPatchPath, outputPath);
+                try {
+                    Patcher.BPSpatcher.applyPatch(FTP.getLocalPath(ftpPath), cafeBaristaPatchPath, outputPath);
+                } catch (IOException e) {
+                    log("Failed to apply patch: " + e.getMessage(), LogLevel.ERROR);
+                    return;
+                }
             } else {
                 log("Only .bps patches are supported at this time.", LogLevel.FATAL);
                 return;
