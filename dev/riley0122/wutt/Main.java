@@ -82,7 +82,7 @@ public class Main {
             cafeBaristaPatchPath = System.console().readLine().trim();
         }
 
-        // Apply the patches
+        // Fetch original ROMs
         System.out.println("What is the region of the Wii U console? (EU/US/JP)");
         String region = System.console().readLine().trim().toUpperCase();
 
@@ -118,6 +118,43 @@ public class Main {
         if (cafeBaristaPatch) {
             log("Fetching cafe_barista_men.bfsar file", LogLevel.INFO);
             FTP.getFile(ip, "storage_mlc/sys/title/00050010/" + regionCode + "/content/Common/Sound/Men/cafe_barista_men.bfsar");
+        }
+
+        // Apply patches
+        if (Men1Patch) {
+            log("Initializing Men.pack patch", LogLevel.INFO);
+            String outputPath = themeName + "/content/Common/Package/Men.pack";
+            String ftpPath = "storage_mlc/sys/title/00050010/" + regionCode + "/content/Common/Package/Men.pack";
+            if (Men1PatchPath.endsWith(".bps")) {
+                Patcher.BPSpatcher.applyPatch(FTP.getLocalPath(ftpPath), Men1PatchPath, outputPath);
+            } else {
+                log("Only .bps patches are supported at this time.", LogLevel.FATAL);
+                return;
+            }
+        }
+
+        if (Men2Patch) {
+            log("Initializing Men2.pack patch", LogLevel.INFO);
+            String outputPath = themeName + "/content/Common/Package/Men2.pack";
+            String ftpPath = "storage_mlc/sys/title/00050010/" + regionCode + "/content/Common/Package/Men2.pack";
+            if (Men2PatchPath.endsWith(".bps")) {
+                Patcher.BPSpatcher.applyPatch(FTP.getLocalPath(ftpPath), Men2PatchPath, outputPath);
+            } else {
+                log("Only .bps patches are supported at this time.", LogLevel.FATAL);
+                return;
+            }
+        }
+
+        if (cafeBaristaPatch) {
+            log("Initializing cafe_barista_men.bfsar patch", LogLevel.INFO);
+            String outputPath = themeName + "/content/Common/Package/Sound/Men/cafe_barista_men.bfsar";
+            String ftpPath = "storage_mlc/sys/title/00050010/" + regionCode + "/content/Common/Sound/Men/cafe_barista_men.bfsar";
+            if (cafeBaristaPatchPath.endsWith(".bps")) {
+                Patcher.BPSpatcher.applyPatch(FTP.getLocalPath(ftpPath), cafeBaristaPatchPath, outputPath);
+            } else {
+                log("Only .bps patches are supported at this time.", LogLevel.FATAL);
+                return;
+            }
         }
     }
 }
