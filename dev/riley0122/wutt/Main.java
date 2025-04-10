@@ -79,6 +79,7 @@ public class Main {
 
         if (cafeBaristaPatch) {
             System.out.println("What is the path of the cafe_barista_men.bps file?");
+            cafeBaristaPatchPath = System.console().readLine().trim();
         }
 
         // Apply the patches
@@ -105,14 +106,17 @@ public class Main {
         log("Using region code: " + regionCode, LogLevel.DEBUG);
 
         if (Men1Patch) {
+            log("Fetching Men.pack file", LogLevel.INFO);
             FTP.getFile(ip, "storage_mlc/sys/title/00050010/" + regionCode + "/content/Common/Package/Men.pack");
         }
 
         if (Men2Patch) {
+            log("Fetching Men2.pack file", LogLevel.INFO);
             FTP.getFile(ip, "storage_mlc/sys/title/00050010/" + regionCode + "/content/Common/Package/Men2.pack");
         }
 
         if (cafeBaristaPatch) {
+            log("Fetching cafe_barista_men.bfsar file", LogLevel.INFO);
             FTP.getFile(ip, "storage_mlc/sys/title/00050010/" + regionCode + "/content/Common/Sound/Men/cafe_barista_men.bfsar");
         }
     }

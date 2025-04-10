@@ -33,7 +33,7 @@ public class FTP {
 
     public static void getFile(String ip, String path) {
         String ftpUrl = "ftp://anonymous:anonymous@" + ip + "/" + path + ";type=i";
-        System.out.println("FTP URL: " + ftpUrl);
+        Main.log("FTP URL: " + ftpUrl, Main.LogLevel.DEBUG);
 
         try {
             URL url = new URL(ftpUrl);
@@ -49,6 +49,7 @@ public class FTP {
                 outputStream.write(buffer, 0, bytesRead);
             }
 
+            Main.log("Finished FTP transfer.", Main.LogLevel.INFO);
             outputStream.close();
             inputStream.close();
         } catch (IOException e) {
