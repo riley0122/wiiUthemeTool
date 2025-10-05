@@ -82,6 +82,12 @@ public class Main {
             System.out.println("What is the path of the cafe_barista_men.bps file?");
             cafeBaristaPatchPath = System.console().readLine().trim().replaceAll("\"", "");
         }
+        
+        // If no patches are to be applied, exit
+        if (!Men1Patch && !Men2Patch && !cafeBaristaPatch) {
+        	log("No patches to apply!", LogLevel.FATAL);
+        	System.exit(0);
+        }
 
         // Fetch original ROMs
         System.out.println("What is the region of the Wii U console? (EU/US/JP)");
