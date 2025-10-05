@@ -4,10 +4,6 @@ import java.io.File;
 import java.io.IOException;
 
 public class Patcher {
-	private static long decode() {
-		long data = 0;
-	}
-	
     public class BPSpatcher {
         public static void applyPatch(String originalRom, String patchFile, String outputRom) throws IOException {
             System.out.println("Attempting to apply BPS patch... (" + originalRom + " + " + patchFile + " -> " + outputRom + ")");
