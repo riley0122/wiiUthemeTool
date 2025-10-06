@@ -10,9 +10,14 @@ public class Main {
     public static String Men2PatchPath = "";
     public static boolean cafeBaristaPatch = false;
     public static String cafeBaristaPatchPath = "";
+    public static String regionCode = "";
 
     public static String themeName = "";
     public static String ip = "";
+    
+    public static boolean disable_ftp = false;
+    public static boolean skipInputDialog = false;
+    public static boolean allowOverwrite = false;
 
     enum LogLevel {
         FATAL(5),
@@ -43,24 +48,25 @@ public class Main {
         	throw new RuntimeException();
     	}
     }
-
-    public static void main(String[] args) {
-        System.out.println("Wii U Theme Tool (WUTT) - v1.0.0");
-        System.out.println("By Riley0122 (riley0122.dev)");
-
-        for (String arg : args) {
-            if (arg.toLowerCase().startsWith("--loglevel=")) {
-                String level = arg.split("=")[1].toUpperCase();
-                try {
-                    logLevel = LogLevel.valueOf(level);
-                    log("Log level set to " + level, LogLevel.INFO);
-                } catch (IllegalArgumentException e) {
-                    log("Invalid log level: " + level + ". Defaulting to ERROR.", LogLevel.ERROR);
-                }
-            }
-        }
-
-        System.out.println("What is the IP address of you Wii U console?");
+    
+    public static void setRegion(String region) {
+    	switch (region) {
+        case "EU":
+            regionCode = "10040200";
+            break;
+        case "US":
+            regionCode = "10040100";
+            break;
+        case "JP":
+            regionCode = "10040000";
+            break;
+        default:
+            log("Invalid region. Exiting.", LogLevel.FATAL);
+    	}
+    }
+    
+    public static void inputDialog() {
+    	System.out.println("What is the IP address of you Wii U console?");
         ip = System.console().readLine().trim();
         if (ip.isBlank()) {
             log("IP address cannot be empty. Exiting.", LogLevel.FATAL);
@@ -97,6 +103,59 @@ public class Main {
             cafeBaristaPatchPath = System.console().readLine().trim().replaceAll("\"", "");
         }
         
+        System.out.println("What is the region of the Wii U console? (EU/US/JP)");
+        String region = System.console().readLine().trim().toUpperCase();
+
+        setRegion(region);
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Wii U Theme Tool (WUTT) - v1.0.0");
+        System.out.println("By Riley0122 (riley0122.dev)");
+
+        for (String arg : args) {
+            if (arg.toLowerCase().startsWith("--loglevel=")) {
+                String level = arg.split("=")[1].toUpperCase();
+                try {
+                    logLevel = LogLevel.valueOf(level);
+                    log("Log level set to " + level, LogLevel.INFO);
+                } catch (IllegalArgumentException e) {
+                    log("Invalid log level: " + level + ". Defaulting to ERROR.", LogLevel.ERROR);
+                }
+            } else if (arg.toLowerCase().equals("--noremotesource")) {
+                disable_ftp = true;
+            } else if (arg.toLowerCase().equals("--skipinputdialog")) {
+                skipInputDialog = true;
+            } else if (arg.toLowerCase().startsWith("--men1patch=")) {
+                String path = arg.split("=")[1];
+                Men1Patch = true;
+                Men1PatchPath = path;
+            } else if (arg.toLowerCase().startsWith("--men2patch=")) {
+                String path = arg.split("=")[1];
+                Men2Patch = true;
+                Men2PatchPath = path;
+            } else if (arg.toLowerCase().startsWith("--cafebaristapatch=")) {
+                String path = arg.split("=")[1];
+                cafeBaristaPatch = true;
+                cafeBaristaPatchPath = path;
+            } else if (arg.toLowerCase().startsWith("--regioncode=")) {
+                String code = arg.split("=")[1];
+                regionCode = code;
+            } else if (arg.toLowerCase().startsWith("--region=")) {
+                String code = arg.split("=")[1].toUpperCase();
+                setRegion(code);
+            } else if (arg.toLowerCase().startsWith("--themename=")) {
+                String name = arg.split("=")[1];
+                themeName = name;
+            } else if (arg.toLowerCase().equals("--allowoverwrite")) {
+                allowOverwrite = true;
+            }
+        }
+        
+        if (!skipInputDialog) {
+        	inputDialog();
+        }
+        
         // If no patches are to be applied, exit
         if (!Men1Patch && !Men2Patch && !cafeBaristaPatch) {
         	log("No patches to apply!", LogLevel.FATAL);
@@ -104,25 +163,6 @@ public class Main {
         }
 
         // Fetch original ROMs
-        System.out.println("What is the region of the Wii U console? (EU/US/JP)");
-        String region = System.console().readLine().trim().toUpperCase();
-
-        String regionCode = "";
-        switch (region) {
-            case "EU":
-                regionCode = "10040200";
-                break;
-            case "US":
-                regionCode = "10040100";
-                break;
-            case "JP":
-                regionCode = "10040000";
-                break;
-            default:
-                log("Invalid region. Exiting.", LogLevel.FATAL);
-                return;
-        }
-
         log("Fetching files from Wii U...", LogLevel.INFO);
         log("Using region code: " + regionCode, LogLevel.DEBUG);
 

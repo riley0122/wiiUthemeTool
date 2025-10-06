@@ -32,6 +32,8 @@ public class FTP {
     }
 
     public static void getFile(String ip, String path) {  	
+    	if (Main.disable_ftp) {return;}
+    	
         String ftpUrl = "ftp://anonymous:anonymous@" + ip + "/" + path + ";type=i";
         Main.log("FTP URL: " + ftpUrl, Main.LogLevel.DEBUG);
 

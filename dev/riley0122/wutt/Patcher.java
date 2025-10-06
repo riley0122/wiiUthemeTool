@@ -23,7 +23,7 @@ public class Patcher {
                 return;
             }
 
-            if (output.exists()) {
+            if (!Main.allowOverwrite && output.exists()) {
             	Main.log("Output ROM file already exists: " + outputRom, Main.LogLevel.FATAL);
                 return;
             } else {
