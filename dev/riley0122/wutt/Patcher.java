@@ -2,6 +2,7 @@ package dev.riley0122.wutt;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 public class Patcher {
     public class BPSpatcher {
@@ -9,33 +10,37 @@ public class Patcher {
             System.out.println("Attempting to apply BPS patch... (" + originalRom + " + " + patchFile + " -> " + outputRom + ")");
             
             File original = new File(originalRom);
-            File patch = new File(patchFile);
+            File patch_ = new File(patchFile);
             File output = new File(outputRom);
 
             if (!original.exists()) {
-                System.out.println("Original ROM file does not exist: " + originalRom);
+            	Main.log("Original ROM file does not exist: " + originalRom, Main.LogLevel.FATAL);
                 return;
             }
 
-            if (!patch.exists()) {
-                System.out.println("Patch file does not exist: " + patchFile);
+            if (!patch_.exists()) {
+            	Main.log("Patch file does not exist: " + patchFile, Main.LogLevel.FATAL);
                 return;
             }
 
             if (output.exists()) {
-                System.out.println("Output ROM file already exists: " + outputRom);
+            	Main.log("Output ROM file already exists: " + outputRom, Main.LogLevel.FATAL);
                 return;
             } else {
                 try {
                     output.getParentFile().mkdirs();
                     output.createNewFile();
                 } catch (IOException e) {
-                    System.out.println("Failed to create output file: " + outputRom + " - " + e.getMessage());
+                	Main.log("Failed to create output file: " + outputRom + " - " + e.getMessage(), Main.LogLevel.FATAL);
                     return;
                 }
             }
             
-            // TODO: apply the patch
+            // Apply the patch
+            byte[] source = Files.readAllBytes(original.toPath());
+            byte[] patch_bytes = Files.readAllBytes(patch_.toPath());
+            
+            Patch patch = new Patch(patch_bytes);
         }
     }
 }

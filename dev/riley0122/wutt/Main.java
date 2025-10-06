@@ -25,9 +25,13 @@ public class Main {
     public static LogLevel logLevel = LogLevel.ERROR;
 
     public static void log(String message, LogLevel level) {
-        if (level.ordinal() <= level.ordinal()) {
+        if (level.ordinal() <= logLevel.ordinal()) {
             System.out.println("[" + level.name() + "] " + message);
         }
+        
+        if (level == LogLevel.FATAL) {
+        	throw new RuntimeException();
+    	}
     }
 
     public static void main(String[] args) {
