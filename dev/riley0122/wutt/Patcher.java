@@ -4,10 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import dev.riley0122.wutt.Main.LogLevel;
+
 public class Patcher {
     public class BPSpatcher {
         public static void applyPatch(String originalRom, String patchFile, String outputRom) throws IOException {
-            System.out.println("Attempting to apply BPS patch... (" + originalRom + " + " + patchFile + " -> " + outputRom + ")");
+            Main.log("Attempting to apply BPS patch... (" + originalRom + " + " + patchFile + " -> " + outputRom + ")", LogLevel.INFO);
             
             File original = new File(originalRom);
             File patch_ = new File(patchFile);
