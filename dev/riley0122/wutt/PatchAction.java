@@ -2,10 +2,10 @@ package dev.riley0122.wutt;
 
 public class PatchAction {
 	private int action;
-	private long length;
+	public long length;
 	
-	private long offsetData;
-	private byte[] data;
+	public long offsetData;
+	public byte[] data;
 	
 	public PatchAction(long actionByte) {
 		this.action = (int)(actionByte & 3);

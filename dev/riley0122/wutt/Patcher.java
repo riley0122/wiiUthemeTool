@@ -1,8 +1,10 @@
 package dev.riley0122.wutt;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import dev.riley0122.wutt.Main.LogLevel;
 
@@ -43,6 +45,10 @@ public class Patcher {
             byte[] patch_bytes = Files.readAllBytes(patch_.toPath());
             
             Patch patch = new Patch(patch_bytes);
+            
+            Main.log("Writing output file to " + output.getPath(), Main.LogLevel.INFO);
+            byte[] output_bytes = patch.apply(source);
+            Files.write(Paths.get(output.getPath()), output_bytes);
         }
     }
 }

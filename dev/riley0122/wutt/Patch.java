@@ -2,6 +2,9 @@ package dev.riley0122.wutt;
 
 import java.util.Iterator;
 import java.util.stream.Collectors;
+
+import dev.riley0122.wutt.Main.LogLevel;
+
 import java.util.ArrayList;
 
 public class Patch {
@@ -49,6 +52,8 @@ public class Patch {
 		
 		if (!this.magic.equals("BPS1")) {
 			Main.log("Invalid BPS file: expected BPS1, got " + this.magic, Main.LogLevel.FATAL);
+		} else {
+			Main.log("File has valid header.", Main.LogLevel.INFO);
 		}
 	}
 	
@@ -97,12 +102,82 @@ public class Patch {
 		// - 12, because that's the size of the footer according to spec.
 		while (offset < this.bytes.length - 12) {
 			long data = this.decodeNumber();
-			PatchAction action = new PatchAction(data);
+			
+			int command = (int)(data & 3);
+			long length = (data >> 2) + 1;
+			
+			PatchAction action = null;
+			switch (command) {
+			case 0:
+				action = new PatchAction(data);
+				break;
+				
+			case 1:
+				byte[] targetData = new byte[(int) length];
+				for (int i = 0; i < length; i++) {
+                    targetData[i] = this.readByte();
+                }
+				action = new PatchAction(data, targetData);
+				break;
+			case 2:
+			case 3:
+				long offsetData = this.decodeNumber();
+				action = new PatchAction(data, offsetData);
+                break;
+               
+            default:
+            	Main.log("Invalid action command! Got " + command + ", has to be one of 0, 1, 2, or 3", Main.LogLevel.FATAL);
+            	break;
+			}
+			
+			
 			Main.log("Found action: " + action.getName(), Main.LogLevel.DEBUG);
 			actions.add(action);
 		}
 		
 		Main.log("Found " + actions.size() + " actions.", Main.LogLevel.INFO);
 		return actions.toArray(new PatchAction[0]);
+	}
+	
+	public byte[] apply(byte[] source) {
+		byte[] target = new byte[(int)this.targetSize];
+		
+		for(int i = 0; i < this.actions.length; i++) {
+			PatchAction action = this.actions[i];
+			
+			long length = action.length;
+			long data_offset = action.offsetData;
+			
+			switch (action.getName()) {
+			case "SourceRead":
+				while (length-- > 0) {
+					target[(int) this.outputOffset] = source[(int) this.outputOffset];
+					this.outputOffset++;
+				}
+				break;
+			case "TargetRead":
+				byte[] data = action.data;
+				for (int j = 0; j < data.length; j++) {
+                    target[(int) outputOffset++] = data[j];
+                }
+				break;
+			case "SourceCopy":
+				this.sourceRelativeOffset += ((data_offset & 1) != 0 ? -1 : +1) * (data_offset >> 1);
+				while (length-- > 0) {
+					target[(int) this.outputOffset++] = source[(int) this.sourceRelativeOffset++];
+				}
+				break;
+			case "TargetCopy":
+				this.targetRelativeOffset += ((data_offset & 1) != 0 ? -1 : +1) * (data_offset >> 1);
+				while (length-- > 0) {
+					target[(int) this.outputOffset++] = target[(int) this.targetRelativeOffset++];
+				}
+				break;
+			}
+			
+			Main.log("Applied " + action.getName() + " action.", LogLevel.DEBUG);
+		}
+		
+		return target;
 	}
 }
