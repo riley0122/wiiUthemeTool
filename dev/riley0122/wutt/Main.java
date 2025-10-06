@@ -15,17 +15,27 @@ public class Main {
     public static String ip = "";
 
     enum LogLevel {
-        FATAL,
-        ERROR,
-        WARN,
-        INFO,
-        DEBUG
+        FATAL(5),
+        ERROR(4),
+        WARN(3),
+        INFO(2),
+        DEBUG(1),
+        BYTE(0);
+    	
+    	private Integer severity;
+    	LogLevel(int severity) {
+    		this.severity = severity;
+    	}
+    	
+    	public boolean shouldShow(LogLevel other) {
+    		return this.severity >= other.severity;
+    	}
     }
 
     public static LogLevel logLevel = LogLevel.ERROR;
 
     public static void log(String message, LogLevel level) {
-        if (level.ordinal() <= logLevel.ordinal()) {
+        if (level.shouldShow(logLevel)) {
             System.out.println("[" + level.name() + "] " + message);
         }
         
